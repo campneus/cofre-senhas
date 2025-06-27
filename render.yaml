@@ -1,38 +1,51 @@
+# render.yaml
 services:
   - type: web
     name: cofre-campneus
     env: node
-    plan: free
     buildCommand: npm install
-    startCommand: npm start
-    healthCheckPath: /api/dashboard/status
+    startCommand: node server.js
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
-      - key: DATABASE_URL
-        fromDatabase:
-          name: cofre-campneus-db
-          property: connectionString
-      - key: JWT_SECRET
-        generateValue: true
+      - key: PORT
+        fromService:
+          type: web
+          name: cofre-campneus
+          envVarKey: PORT
       - key: SESSION_SECRET
         generateValue: true
-      - key: BCRYPT_ROUNDS
-        value: 12
-      - key: JWT_EXPIRES_IN
-        value: 24h
-      - key: MAX_FILE_SIZE
-        value: 5242880
-      - key: UPLOAD_PATH
-        value: ./uploads
-      - key: RATE_LIMIT_WINDOW_MS
-        value: 900000
-      - key: RATE_LIMIT_MAX_REQUESTS
-        value: 100
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: true
+      - key: COOKIE_HTTP_ONLY
+        value: true
+      - key: COOKIE_MAX_AGE
+        value: 86400000
+      - key: DB_HOST
+        fromDatabase:
+          name: postgres-db
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: postgres-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: postgres-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: postgres-db
+          property: password
+      - key: DB_PORT
+        fromDatabase:
+          name: postgres-db
+          property: port
 
 databases:
-  - name: cofre-campneus-db
-    databaseName: cofre_campneus
-    user: cofre_campneus_user
-    plan: free
-
+  - name: postgres-db
+    plan: standard
+    ipAllowList: []

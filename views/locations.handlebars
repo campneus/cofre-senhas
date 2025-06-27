@@ -1,0 +1,207 @@
+<!-- views/locations.handlebars -->
+<div>
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Localidades</h2>
+            <p class="text-gray-600">Gerencie as localidades do sistema</p>
+        </div>
+        <button 
+            data-toggle="modal" 
+            data-target="locationModal" 
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg transition duration-200 flex items-center space-x-2"
+        >
+            <i class="fas fa-plus"></i>
+            <span>Nova Localidade</span>
+        </button>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <form action="/locations" method="GET" class="flex space-x-4">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            placeholder="Buscar..." 
+                            class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                            value="{{search}}"
+                        >
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button type="submit" class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg">
+                        <i class="fas fa-filter mr-2"></i>Filtrar
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNPJ</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inscrição Estadual</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Inscrição Municipal</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {{#each locations}}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{this.code}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{this.name}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{this.cnpj}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{this.state_registration}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{this.municipal_registration}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{#if this.active}}bg-green-100 text-green-800{{else}}bg-red-100 text-red-800{{/if}}">
+                                    {{#if this.active}}Ativo{{else}}Inativo{{/if}}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                                <button 
+                                    onclick="editLocation('{{this.id}}')" 
+                                    class="text-yellow-600 hover:text-yellow-900"
+                                    data-tooltip="Editar"
+                                >
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                {{#if (isAdmin ../user.role)}}
+                                    <form action="/locations/{{this.id}}?_method=DELETE" method="POST" class="inline">
+                                        <button 
+                                            type="submit" 
+                                            onclick="return confirm('Tem certeza que deseja excluir esta localidade? Esta ação não poderá ser desfeita e removerá todas as senhas associadas.')"
+                                            class="text-red-600 hover:text-red-900"
+                                            data-tooltip="Excluir"
+                                        >
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                    {{#unless locations.length}}
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                Nenhuma localidade encontrada.
+                            </td>
+                        </tr>
+                    {{/unless}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Location Modal -->
+<div id="locationModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-semibold text-gray-800" id="locationModalTitle">Nova Localidade</h3>
+                <button data-dismiss="modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <form class="p-6 space-y-6" id="locationForm" action="/locations" method="POST" data-validate="true">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="form-label">Código da Localidade</label>
+                    <input name="code" type="text" class="form-input" placeholder="Ex: LOC001" required>
+                </div>
+
+                <div>
+                    <label class="form-label">Nome da Localidade</label>
+                    <input name="name" type="text" class="form-input" placeholder="Ex: São Paulo" required>
+                </div>
+
+                <div>
+                    <label class="form-label">CNPJ</label>
+                    <input 
+                        name="cnpj" 
+                        type="text" 
+                        class="form-input" 
+                        placeholder="Ex: XX.XXX.XXX/XXXX-XX" 
+                        onkeyup="this.value=formatCNPJ(this.value)"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label class="form-label">Inscrição Estadual</label>
+                    <input name="state_registration" type="text" class="form-input" placeholder="Ex: 123456789">
+                </div>
+
+                <div>
+                    <label class="form-label">Inscrição Municipal</label>
+                    <input name="municipal_registration" type="text" class="form-input" placeholder="Ex: 123456789">
+                </div>
+
+                <div>
+                    <label class="form-label">Status</label>
+                    <select name="active" class="form-select">
+                        <option value="true" selected>Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                <button type="button" data-dismiss="modal" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200">
+                    Cancelar
+                </button>
+                <button type="submit" class="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition duration-200">
+                    Salvar Localidade
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editLocation(id) {
+        fetch(`/locations/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                // Open the modal
+                const modal = document.getElementById('locationModal');
+                modal.classList.remove('hidden');
+                
+                // Update title
+                document.getElementById('locationModalTitle').textContent = 'Editar Localidade';
+                
+                // Update form
+                const form = document.getElementById('locationForm');
+                form.action = `/locations/${id}?_method=PUT`;
+                
+                // Populate form fields
+                form.querySelector('[name="code"]').value = data.code;
+                form.querySelector('[name="name"]').value = data.name;
+                form.querySelector('[name="cnpj"]').value = data.cnpj;
+                form.querySelector('[name="state_registration"]').value = data.state_registration || '';
+                form.querySelector('[name="municipal_registration"]').value = data.municipal_registration || '';
+                form.querySelector('[name="active"]').value = data.active.toString();
+            })
+            .catch(error => {
+                console.error('Error fetching location:', error);
+                alert('Erro ao carregar dados da localidade');
+            });
+    }
+</script>

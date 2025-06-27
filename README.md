@@ -1,216 +1,148 @@
 # Cofre Campneus - Sistema de Gerenciamento de Senhas
 
-Sistema completo de gerenciamento de senhas desenvolvido em Node.js com Express, PostgreSQL e interface web responsiva.
+Um sistema completo para gerenciamento seguro de senhas empresariais, desenvolvido para a Campneus.
 
-## 🚀 Funcionalidades
+## Sobre o Projeto
 
-### Dashboard
-- Visão geral com estatísticas do sistema
-- Gráficos de senhas por categoria
-- Últimas senhas criadas/alteradas
-- Senhas que expiram em breve
-- Atividade recente do sistema
+O Cofre Campneus é um sistema de gerenciamento de senhas projetado especificamente para a Campneus, permitindo armazenar e gerenciar credenciais de acesso para diversos sistemas, organizados por categorias:
 
-### Gerenciamento de Senhas
-- CRUD completo de senhas
-- Categorização (Prefeituras, Fornecedores, Órgãos Governamentais, B2Fleet)
-- Criptografia de senhas
-- Controle de expiração
-- Sistema de busca e filtros avançados
-- Notificações de expiração
+- Prefeituras
+- Fornecedores
+- Órgãos Governamentais
+- B2Fleet e Locadoras
 
-### Localidades
-- Cadastro de localidades com CNPJ
-- Vinculação de senhas às localidades
-- Controle de status (ativo/inativo)
+## Tecnologias Utilizadas
 
-### Usuários
-- Dois tipos de usuário: Administrador e Analista
-- **Administrador**: Acesso completo ao sistema
-- **Analista**: Apenas visualização de senhas
-- Sistema de autenticação JWT
-- Controle de sessões
+- Node.js
+- Express.js
+- PostgreSQL
+- Sequelize ORM
+- Express Handlebars
+- JWT para autenticação
+- Bcrypt para criptografia de senhas
 
-### Segurança
-- Autenticação JWT
-- Criptografia de senhas sensíveis
-- Rate limiting
-- Validação de dados
-- Controle de acesso por tipo de usuário
+## Configuração do Ambiente Local
 
-## 🛠️ Tecnologias Utilizadas
+### Pré-requisitos
 
-### Backend
-- **Node.js** - Runtime JavaScript
-- **Express.js** - Framework web
-- **PostgreSQL** - Banco de dados
-- **JWT** - Autenticação
-- **bcrypt** - Hash de senhas
-- **crypto** - Criptografia de dados sensíveis
+- Node.js (v14 ou superior)
+- PostgreSQL
 
-### Frontend
-- **EJS** - Template engine
-- **Tailwind CSS** - Framework CSS
-- **Font Awesome** - Ícones
-- **Chart.js** - Gráficos
-- **JavaScript Vanilla** - Interatividade
+### Instalação
 
-### Deploy
-- **Docker** - Containerização
-- **Render** - Plataforma de deploy
-- **Neon DB** - PostgreSQL na nuvem
+1. Clone o repositório
 
-## 📋 Pré-requisitos
 
-- Node.js 18+ 
-- PostgreSQL 12+
-- npm ou yarn
+2. Instale as dependências
 
-## 🔧 Instalação e Configuração
 
-### 1. Clone o repositório
-\`\`\`bash
-git clone <repository-url>
-cd cofre-campneus
-\`\`\`
+3. Configure o ambiente
 
-### 2. Instale as dependências
-\`\`\`bash
-npm install
-\`\`\`
+Edite o arquivo `.env` com suas configurações locais, especialmente as de conexão ao banco de dados.
 
-### 3. Configure o banco de dados
-\`\`\`bash
-# Execute o script SQL para criar as tabelas
-psql -h hostname -U username -d database_name -f database.sql
-\`\`\`
+4. Crie o banco de dados e execute o esquema
 
-### 4. Configure as variáveis de ambiente
-\`\`\`bash
-# Copie o arquivo de exemplo
-cp .env.example .env
 
-# Edite o arquivo .env com suas configurações
-nano .env
-\`\`\`
+5. Inicie o servidor
 
-### 5. Inicie a aplicação
-\`\`\`bash
-# Desenvolvimento
-npm run dev
 
-# Produção
-npm start
-\`\`\`
+O aplicativo estará disponível em `http://localhost:3000`
 
-## 🌐 Deploy no Render
+### Acesso Inicial
 
-### Usando render.yaml (Recomendado)
-1. Faça push do código para um repositório Git
-2. Conecte o repositório no Render
-3. O arquivo \`render.yaml\` configurará automaticamente:
-   - Serviço web
-   - Banco de dados PostgreSQL
-   - Variáveis de ambiente
+Acesse o sistema usando:
+- Email: admin@campneus.com.br
+- Senha: admin123
 
-### Deploy Manual
-1. Crie um novo Web Service no Render
-2. Configure as variáveis de ambiente:
-   - \`DATABASE_URL\`: String de conexão PostgreSQL
-   - \`JWT_SECRET\`: Chave secreta JWT
-   - \`SESSION_SECRET\`: Chave secreta da sessão
-   - \`NODE_ENV\`: production
+⚠️ **IMPORTANTE**: Altere a senha do administrador após o primeiro login!
 
-## 🐳 Docker
+## Deployment na Render
 
-### Build da imagem
-\`\`\`bash
-docker build -t cofre-campneus .
-\`\`\`
+O sistema está configurado para fácil deployment na plataforma Render. Siga os passos abaixo:
 
-### Executar container
-\`\`\`bash
-docker run -p 3000:3000 --env-file .env cofre-campneus
-\`\`\`
+### 1. Crie uma conta na Render
 
-## 📊 Estrutura do Banco de Dados
+Acesse [render.com](https://render.com/) e crie uma conta se ainda não tiver uma.
 
-### Tabelas Principais
-- **usuarios** - Usuários do sistema
-- **localidades** - Localidades/empresas
-- **senhas** - Senhas criptografadas
-- **prefeituras** - Dados das prefeituras
-- **fornecedores** - Dados dos fornecedores
+### 2. Conecte seu repositório
 
-### Relacionamentos
-- Senhas → Localidades (N:1)
-- Senhas → Usuários (N:1 para criador/atualizador)
+- No dashboard da Render, clique em "New" e selecione "Blueprint".
+- Conecte seu repositório do GitHub/GitLab onde o código está hospedado.
+- Selecione o repositório do Cofre Campneus.
 
-## 🔐 Usuário Padrão
+### 3. Configure o Banco de Dados
 
-Após executar o script SQL, será criado um usuário administrador padrão:
-- **Email**: admin@cofrecampneus.com
-- **Senha**: admin123
-- **Tipo**: Administrador
+- No dashboard da Render, clique em "New" e selecione "PostgreSQL".
+- Preencha as informações:
+  - Nome: cofre-campneus-db
+  - Plano: Selecione um plano adequado (pelo menos o Standard)
+  - Região: Escolha a mais próxima dos seus usuários
+- Clique em "Create Database"
+- Anote as credenciais fornecidas pela Render.
 
-⚠️ **Importante**: Altere a senha padrão após o primeiro login!
+### 4. Configure o Serviço Web
 
-## 📁 Estrutura do Projeto
+- No dashboard da Render, clique em "New" e selecione "Web Service".
+- Conecte ao seu repositório Git.
+- Configure o serviço:
+  - Nome: cofre-campneus
+  - Ambiente: Node
+  - Build Command: `npm install`
+  - Start Command: `node server.js`
+  - Plano: Selecione um plano adequado
 
-\`\`\`
-cofre-campneus/
-├── src/
-│   ├── config/          # Configurações
-│   ├── controllers/     # Controladores
-│   ├── middleware/      # Middlewares
-│   ├── models/          # Models
-│   ├── routes/          # Rotas
-│   └── app.js          # Aplicação principal
-├── views/              # Templates EJS
-├── public/             # Arquivos estáticos
-├── uploads/            # Uploads de arquivos
-├── database.sql        # Script de criação do BD
-├── Dockerfile         # Configuração Docker
-├── render.yaml        # Configuração Render
-└── package.json       # Dependências
-\`\`\`
+### 5. Configure as Variáveis de Ambiente
 
-## 🔧 Scripts Disponíveis
+Na seção "Environment" do seu serviço web, adicione as seguintes variáveis:
 
-\`\`\`bash
-npm start          # Inicia em produção
-npm run dev        # Inicia em desenvolvimento
-npm run lint       # Executa linting
-npm test           # Executa testes
-\`\`\`
+```
+NODE_ENV=production
+PORT=10000
+SESSION_SECRET=use_uma_string_aleatoria_segura
+JWT_SECRET=use_outra_string_aleatoria_segura
+DB_HOST=seu_host_postgres_render
+DB_NAME=seu_nome_db
+DB_USER=seu_usuario_db
+DB_PASSWORD=sua_senha_db
+DB_PORT=5432
+COOKIE_SECURE=true
+COOKIE_HTTP_ONLY=true
+```
 
-## 🤝 Contribuição
+### 6. Importe o Esquema do Banco de Dados
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (\`git checkout -b feature/AmazingFeature\`)
-3. Commit suas mudanças (\`git commit -m 'Add some AmazingFeature'\`)
-4. Push para a branch (\`git push origin feature/AmazingFeature\`)
-5. Abra um Pull Request
+Para inicializar seu banco de dados, você pode usar o arquivo `database/schema.sql`.
 
-## 📝 Licença
+1. Abra o Dashboard do PostgreSQL na Render
+2. Acesse a seção "Shell"
+3. Execute o seguinte comando substituindo com seu nome de banco de dados:
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+```sql
+\i database/schema.sql
+```
 
-## 📞 Suporte
+Alternativamente, você pode copiar e colar o conteúdo do arquivo schema.sql diretamente.
 
-Para suporte, entre em contato através do email: suporte@cofrecampneus.com
+### 7. Acesse o Sistema
 
-## 🔄 Changelog
+Após o deploy, seu sistema estará disponível no endereço fornecido pela Render. Use as credenciais de administrador para fazer login e começar a usar o sistema.
 
-### v1.0.0 (2024-12-26)
-- Lançamento inicial
-- Sistema completo de gerenciamento de senhas
-- Interface web responsiva
-- Sistema de autenticação
-- Dashboard com métricas
-- Deploy configurado para Render
+## Funcionalidades
 
----
+- Gerenciamento de senhas por categorias
+- Controle de acesso baseado em perfis de usuário (Admin, Gerente, Usuário)
+- Localidades com informações fiscais (CNPJ, IE, IM)
+- Dashboard com estatísticas e alertas de senhas a expirar
+- Registro de acessos para auditoria
+- Criptografia segura de senhas
 
-**Cofre Campneus** - Sistema de Gerenciamento de Senhas © 2024
+## Segurança
 
+- Todas as senhas de usuários são armazenadas com hash bcrypt
+- As credenciais são protegidas e só são exibidas mediante interação do usuário
+- Controle de sessão com tokens JWT
+- Proteção contra CSRF e XSS
+
+## Suporte
+
+Para suporte ou dúvidas, entre em contato com a equipe de TI da Campneus.
