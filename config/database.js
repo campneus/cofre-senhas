@@ -2,11 +2,11 @@
 const { Sequelize } = require('sequelize');
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME || 'cofre_campneus',
-    process.env.DB_USER || 'postgres',
-    process.env.DB_PASSWORD || 'postgres',
+    process.env.PGDATABASE || 'cofre_campneus',
+    process.env.PGUSER || 'postgres',
+    process.env.PGPASSWORD || 'postgres',
     {
-        host: process.env.DB_HOST || 'localhost',
+        host: process.env.PGHOST || 'localhost',
         dialect: 'postgres',
         logging: process.env.NODE_ENV !== 'production' ? console.log : false,
         pool: {

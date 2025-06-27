@@ -4,7 +4,7 @@ services:
     name: cofre-campneus
     env: node
     buildCommand: npm install
-    startCommand: node server.js
+    startCommand: node app.js
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -49,3 +49,17 @@ databases:
   - name: postgres-db
     plan: standard
     ipAllowList: []
+
+      - key: PGHOST
+        value: 'ep-crimson-meadow-a8krhs13.eastus2.azure.neon.tech'
+      - key: PGDATABASE
+        value: 'senhas_campneus'
+      - key: PGUSER
+        value: 'senhas_campneus_owner'
+      - key: PGPASSWORD
+        value: 'npg_MXP5UK4CqToH'
+      - key: PGSSLMODE
+        value: 'require'
+      - key: PGCHANNELBINDING
+        value: 'require'
+
