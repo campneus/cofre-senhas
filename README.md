@@ -1,148 +1,186 @@
 # Cofre Campneus - Sistema de Gerenciamento de Senhas
 
-Um sistema completo para gerenciamento seguro de senhas empresariais, desenvolvido para a Campneus.
+Sistema web para gerenciamento seguro de senhas e credenciais da empresa Campneus, desenvolvido em Node.js com PostgreSQL.
 
-## Sobre o Projeto
+## Características
 
-O Cofre Campneus é um sistema de gerenciamento de senhas projetado especificamente para a Campneus, permitindo armazenar e gerenciar credenciais de acesso para diversos sistemas, organizados por categorias:
-
-- Prefeituras
-- Fornecedores
-- Órgãos Governamentais
-- B2Fleet e Locadoras
+- **Autenticação JWT**: Sistema seguro de login com tokens
+- **Dois tipos de usuário**: Administradores (CRUD completo) e Analistas (apenas visualização)
+- **Criptografia**: Senhas armazenadas com criptografia AES-256
+- **Interface moderna**: Design responsivo com Tailwind CSS
+- **Categorização**: Organização por categorias (Prefeituras, Fornecedores, Órgãos, B2Fleet)
+- **Localidades**: Sistema pré-configurado com todas as filiais da empresa
 
 ## Tecnologias Utilizadas
 
-- Node.js
-- Express.js
-- PostgreSQL
-- Sequelize ORM
-- Express Handlebars
-- JWT para autenticação
-- Bcrypt para criptografia de senhas
+- **Backend**: Node.js, Express.js
+- **Banco de Dados**: PostgreSQL
+- **Autenticação**: JWT (JSON Web Tokens)
+- **Criptografia**: bcryptjs (senhas de usuário), crypto (senhas armazenadas)
+- **Frontend**: HTML5, CSS3, JavaScript, Tailwind CSS
+- **Segurança**: Helmet, CORS, Rate Limiting
 
-## Configuração do Ambiente Local
+## Instalação Local
 
 ### Pré-requisitos
-
-- Node.js (v14 ou superior)
+- Node.js 18+ 
 - PostgreSQL
+- Git
 
-### Instalação
+### Passos
 
-1. Clone o repositório
+1. **Clone o repositório**
+   ```bash
+   git clone <url-do-repositorio>
+   cd cofre-campneus
+   ```
 
+2. **Instale as dependências**
+   ```bash
+   npm install
+   ```
 
-2. Instale as dependências
+3. **Configure o banco de dados**
+   - Execute o script `database.sql` no seu PostgreSQL
+   - Configure as variáveis de ambiente no arquivo `.env`
 
+4. **Execute a aplicação**
+   ```bash
+   # Desenvolvimento
+   npm run dev
+   
+   # Produção
+   npm start
+   ```
 
-3. Configure o ambiente
+5. **Acesse o sistema**
+   - URL: http://localhost:3000
+   - Login padrão: admin@campneus.com
+   - Senha padrão: admin123
 
-Edite o arquivo `.env` com suas configurações locais, especialmente as de conexão ao banco de dados.
+## Deploy no Render
 
-4. Crie o banco de dados e execute o esquema
+### Configuração do Banco de Dados
 
+1. **Conecte-se ao PostgreSQL**
+   ```bash
+   psql -h ep-crimson-meadow-a8krhs13.eastus2.azure.neon.tech -U senhas_campneus_owner -d senhas_campneus
+   ```
 
-5. Inicie o servidor
+2. **Execute o script SQL**
+   ```bash
+   \i database.sql
+   ```
 
+### Deploy da Aplicação
 
-O aplicativo estará disponível em `http://localhost:3000`
+1. **Faça upload do projeto** para o Render
+2. **Configure as variáveis de ambiente** no painel do Render:
+   - `PGHOST`: ep-crimson-meadow-a8krhs13.eastus2.azure.neon.tech
+   - `PGDATABASE`: senhas_campneus
+   - `PGUSER`: senhas_campneus_owner
+   - `PGPASSWORD`: npg_MXP5UK4CqToH
+   - `PGSSLMODE`: require
+   - `JWT_SECRET`: (gere uma chave segura)
+   - `ENCRYPTION_KEY`: (gere uma chave de 32 caracteres)
 
-### Acesso Inicial
+3. **Configure o comando de build**:
+   ```bash
+   npm install
+   ```
 
-Acesse o sistema usando:
-- Email: admin@campneus.com.br
-- Senha: admin123
+4. **Configure o comando de start**:
+   ```bash
+   npm start
+   ```
 
-⚠️ **IMPORTANTE**: Altere a senha do administrador após o primeiro login!
-
-## Deployment na Render
-
-O sistema está configurado para fácil deployment na plataforma Render. Siga os passos abaixo:
-
-### 1. Crie uma conta na Render
-
-Acesse [render.com](https://render.com/) e crie uma conta se ainda não tiver uma.
-
-### 2. Conecte seu repositório
-
-- No dashboard da Render, clique em "New" e selecione "Blueprint".
-- Conecte seu repositório do GitHub/GitLab onde o código está hospedado.
-- Selecione o repositório do Cofre Campneus.
-
-### 3. Configure o Banco de Dados
-
-- No dashboard da Render, clique em "New" e selecione "PostgreSQL".
-- Preencha as informações:
-  - Nome: cofre-campneus-db
-  - Plano: Selecione um plano adequado (pelo menos o Standard)
-  - Região: Escolha a mais próxima dos seus usuários
-- Clique em "Create Database"
-- Anote as credenciais fornecidas pela Render.
-
-### 4. Configure o Serviço Web
-
-- No dashboard da Render, clique em "New" e selecione "Web Service".
-- Conecte ao seu repositório Git.
-- Configure o serviço:
-  - Nome: cofre-campneus
-  - Ambiente: Node
-  - Build Command: `npm install`
-  - Start Command: `node server.js`
-  - Plano: Selecione um plano adequado
-
-### 5. Configure as Variáveis de Ambiente
-
-Na seção "Environment" do seu serviço web, adicione as seguintes variáveis:
+## Estrutura do Projeto
 
 ```
-NODE_ENV=production
-PORT=10000
-SESSION_SECRET=use_uma_string_aleatoria_segura
-JWT_SECRET=use_outra_string_aleatoria_segura
-DB_HOST=seu_host_postgres_render
-DB_NAME=seu_nome_db
-DB_USER=seu_usuario_db
-DB_PASSWORD=sua_senha_db
-DB_PORT=5432
-COOKIE_SECURE=true
-COOKIE_HTTP_ONLY=true
+cofre-campneus/
+├── src/
+│   ├── config/
+│   │   └── database.js          # Configuração do banco
+│   ├── controllers/
+│   │   ├── authController.js    # Controlador de autenticação
+│   │   ├── userController.js    # Controlador de usuários
+│   │   ├── passwordController.js # Controlador de senhas
+│   │   └── locationController.js # Controlador de localidades
+│   ├── middleware/
+│   │   └── auth.js              # Middleware de autenticação
+│   ├── models/
+│   │   ├── User.js              # Modelo de usuário
+│   │   ├── Password.js          # Modelo de senha
+│   │   └── Location.js          # Modelo de localidade
+│   ├── routes/
+│   │   ├── auth.js              # Rotas de autenticação
+│   │   ├── users.js             # Rotas de usuários
+│   │   ├── passwords.js         # Rotas de senhas
+│   │   └── locations.js         # Rotas de localidades
+│   └── app.js                   # Arquivo principal
+├── public/
+│   ├── js/
+│   │   └── app.js               # JavaScript do frontend
+│   └── index.html               # Interface do usuário
+├── database.sql                 # Script de criação do banco
+├── .env                         # Variáveis de ambiente
+├── package.json                 # Dependências do projeto
+└── README.md                    # Este arquivo
 ```
 
-### 6. Importe o Esquema do Banco de Dados
+## API Endpoints
 
-Para inicializar seu banco de dados, você pode usar o arquivo `database/schema.sql`.
+### Autenticação
+- `POST /api/auth/login` - Login do usuário
+- `POST /api/auth/logout` - Logout do usuário
+- `GET /api/auth/me` - Dados do usuário logado
+- `POST /api/auth/change-password` - Alterar senha
 
-1. Abra o Dashboard do PostgreSQL na Render
-2. Acesse a seção "Shell"
-3. Execute o seguinte comando substituindo com seu nome de banco de dados:
+### Usuários (Admin apenas)
+- `GET /api/users` - Listar usuários
+- `GET /api/users/:id` - Buscar usuário por ID
+- `POST /api/users` - Criar usuário
+- `PUT /api/users/:id` - Atualizar usuário
+- `DELETE /api/users/:id` - Deletar usuário
 
-```sql
-\i database/schema.sql
-```
+### Senhas
+- `GET /api/passwords` - Listar senhas (Admin/Analista)
+- `GET /api/passwords/:id` - Buscar senha por ID (Admin/Analista)
+- `GET /api/passwords/stats` - Estatísticas (Admin/Analista)
+- `POST /api/passwords` - Criar senha (Admin apenas)
+- `PUT /api/passwords/:id` - Atualizar senha (Admin apenas)
+- `DELETE /api/passwords/:id` - Deletar senha (Admin apenas)
 
-Alternativamente, você pode copiar e colar o conteúdo do arquivo schema.sql diretamente.
-
-### 7. Acesse o Sistema
-
-Após o deploy, seu sistema estará disponível no endereço fornecido pela Render. Use as credenciais de administrador para fazer login e começar a usar o sistema.
-
-## Funcionalidades
-
-- Gerenciamento de senhas por categorias
-- Controle de acesso baseado em perfis de usuário (Admin, Gerente, Usuário)
-- Localidades com informações fiscais (CNPJ, IE, IM)
-- Dashboard com estatísticas e alertas de senhas a expirar
-- Registro de acessos para auditoria
-- Criptografia segura de senhas
+### Localidades
+- `GET /api/locations` - Listar localidades (Admin/Analista)
+- `GET /api/locations/:id` - Buscar localidade por ID (Admin/Analista)
+- `POST /api/locations` - Criar localidade (Admin apenas)
+- `PUT /api/locations/:id` - Atualizar localidade (Admin apenas)
+- `DELETE /api/locations/:id` - Deletar localidade (Admin apenas)
 
 ## Segurança
 
-- Todas as senhas de usuários são armazenadas com hash bcrypt
-- As credenciais são protegidas e só são exibidas mediante interação do usuário
-- Controle de sessão com tokens JWT
-- Proteção contra CSRF e XSS
+- **Autenticação**: JWT com expiração de 8 horas
+- **Autorização**: Middleware para verificar permissões por tipo de usuário
+- **Criptografia**: Senhas de usuário com bcrypt (12 rounds)
+- **Criptografia**: Senhas armazenadas com AES-256-CBC
+- **Rate Limiting**: Máximo 100 requests por IP a cada 15 minutos
+- **Headers de Segurança**: Helmet.js para headers HTTP seguros
+- **CORS**: Configurado para permitir apenas origens autorizadas
+
+## Usuário Padrão
+
+- **Email**: admin@campneus.com
+- **Senha**: admin123
+- **Tipo**: Administrador
+
+**⚠️ IMPORTANTE**: Altere a senha padrão após o primeiro login!
 
 ## Suporte
 
-Para suporte ou dúvidas, entre em contato com a equipe de TI da Campneus.
+Para suporte técnico ou dúvidas sobre o sistema, entre em contato com a equipe de TI.
+
+## Licença
+
+Este projeto é propriedade da empresa Campneus e é destinado apenas para uso interno.
+
