@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: cofre-campneus
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PGHOST
+        value: ep-crimson-meadow-a8krhs13.eastus2.azure.neon.tech
+      - key: PGDATABASE
+        value: senhas_campneus
+      - key: PGUSER
+        value: senhas_campneus_owner
+      - key: PGPASSWORD
+        value: npg_MXP5UK4CqToH
+      - key: PGSSLMODE
+        value: require
+      - key: PGCHANNELBINDING
+        value: require
+      - key: JWT_SECRET
+        value: cofre_campneus_jwt_secret_key_2024_production
+      - key: PORT
+        value: 10000
+
