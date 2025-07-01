@@ -1,4 +1,4 @@
-<!-- views/locations.ejs -->
+<%- include("layout", { body: `
 <div class="page-header">
   <div>
     <h1 class="page-title">Localidades</h1>
@@ -19,27 +19,21 @@
       </tr>
     </thead>
     <tbody>
-      <% if (locations.length === 0) { %>
-        <tr>
-          <td colspan="3" style="text-align: center; padding: 30px;">
-            Nenhuma localidade encontrada.
-          </td>
-        </tr>
-      <% } else { %>
-        <% locations.forEach(location => { %>
+      ${locations.length === 0 ? 
+        '<tr><td colspan="3" style="text-align: center; padding: 30px;">Nenhuma localidade encontrada.</td></tr>' :
+        locations.map(location => `
           <tr>
-            <td><%= location.name %></td>
-            <td><%= location.credential_count || 0 %></td>
+            <td>${location.name}</td>
+            <td>${location.credential_count || 0}</td>
             <td>
               <div class="table-actions">
                 <button 
                   class="action-btn edit-btn" 
                   title="Editar" 
-                  onclick="openEditModal('<%= location.id %>', '<%= location.name %>')"
-                >
+                  onclick="openEditModal('${location.id}', '${location.name.replace(/'/g, "\\'")}')">
                   <i class="fas fa-edit"></i>
                 </button>
-                <form action="/categories/locations/<%= location.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
+                <form action="/categories/locations/${location.id}?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
                   <button type="submit" class="action-btn delete-btn" title="Excluir">
                     <i class="fas fa-trash"></i>
                   </button>
@@ -47,8 +41,8 @@
               </div>
             </td>
           </tr>
-        <% }); %>
-      <% } %>
+        `).join('')
+      }
     </tbody>
   </table>
 </div>
@@ -109,9 +103,41 @@
     
     // Update form action
     const form = document.getElementById('editLocationForm');
-    form.action = `/categories/locations/${id}?_method=PUT`;
+    form.action = '/categories/locations/' + id + '?_method=PUT';
     
-    // Open modal
-    $('#editLocationModal').modal('show');
+    // Open modal (assumindo que você tem jQuery ou Bootstrap JS)
+    if (typeof $ !== 'undefined') {
+      $('#editLocationModal').modal('show');
+    } else {
+      // Fallback para abrir modal sem jQuery
+      const modal = document.getElementById('editLocationModal');
+      modal.style.display = 'block';
+      modal.classList.add('show');
+    }
   }
+
+  // Confirmação de exclusão
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.delete-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        if (!confirm('Tem certeza que deseja excluir esta localidade?')) {
+          e.preventDefault();
+        }
+      });
+    });
+
+    // Limpar modal ao fechar
+    const newModal = document.getElementById('newLocationModal');
+    const editModal = document.getElementById('editLocationModal');
+    
+    [newModal, editModal].forEach(modal => {
+      if (modal) {
+        modal.addEventListener('hidden.bs.modal', function () {
+          const form = modal.querySelector('form');
+          if (form) form.reset();
+        });
+      }
+    });
+  });
 </script>
+` }) %>
