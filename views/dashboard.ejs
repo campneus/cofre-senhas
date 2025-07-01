@@ -64,11 +64,10 @@
       <a href="/credentials?category=4" class="btn btn-primary" style="text-align: center; text-decoration: none;">
         <i class="fas fa-car"></i> B2Fleet e Locadoras
       </a>
-      <% if (user.role === 'admin') { %>
-        <a href="/credentials/new/create" class="btn btn-primary" style="text-align: center; text-decoration: none;">
-          <i class="fas fa-plus"></i> Nova Senha
-        </a>
-      <% } %>
+      ${user.role === 'admin' ? 
+        '<a href="/credentials/new/create" class="btn btn-primary" style="text-align: center; text-decoration: none;"><i class="fas fa-plus"></i> Nova Senha</a>' : 
+        ''
+      }
     </div>
   </div>
 </div>
@@ -88,4 +87,3 @@
     });
 </script>
 ` }) %>
-
