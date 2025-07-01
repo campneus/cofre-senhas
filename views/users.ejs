@@ -45,7 +45,7 @@
                 >
                   <i class="fas fa-edit"></i>
                 </button>
-                <% if (user.id !== currentUser.id) { %>
+                <% if (user.id !== locals.user.id) { %>
                   <form action="/users/<%= user.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
                     <button type="submit" class="action-btn delete-btn" title="Excluir">
                       <i class="fas fa-trash"></i>
