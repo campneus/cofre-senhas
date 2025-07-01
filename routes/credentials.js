@@ -4,6 +4,15 @@ const router = express.Router();
 const Credential = require('../models/credential');
 const Category = require('../models/category');
 
+// Middleware to check if user can edit (admin only)
+function checkCanEdit(req, res, next) {
+  if (req.session.user && req.session.user.role === 'admin') {
+    return next();
+  }
+  req.flash('error_msg', 'Você não tem permissão para alterar senhas');
+  return res.redirect('/credentials');
+}
+
 // Get all credentials
 router.get('/', async (req, res) => {
   try {
@@ -78,7 +87,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new credential form
-router.get('/new/create', async (req, res) => {
+router.get('/new/create', checkCanEdit, async (req, res) => {
   try {
     const categories = await Category.getAll();
     const locations = await Category.getLocations();
@@ -97,7 +106,7 @@ router.get('/new/create', async (req, res) => {
 });
 
 // Create new credential
-router.post('/', async (req, res) => {
+router.post('/', checkCanEdit, async (req, res) => {
   try {
     const { system_name, category_id, location_id, username, password, url, notes } = req.body;
     
@@ -128,7 +137,7 @@ router.post('/', async (req, res) => {
 });
 
 // Edit credential form
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id', checkCanEdit, async (req, res) => {
   try {
     const credential = await Credential.getById(req.params.id);
     const categories = await Category.getAll();
@@ -153,7 +162,7 @@ router.get('/edit/:id', async (req, res) => {
 });
 
 // Update credential
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkCanEdit, async (req, res) => {
   try {
     const { id } = req.params;
     const { system_name, category_id, location_id, username, password, url, notes } = req.body;
@@ -186,7 +195,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete credential
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkCanEdit, async (req, res) => {
   try {
     await Credential.delete(req.params.id);
     req.flash('success_msg', 'Credencial excluída com sucesso');
