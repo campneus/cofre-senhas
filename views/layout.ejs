@@ -76,14 +76,9 @@
             </li>
           </ul>
         </li>
-           <li>
-          <a href="/locations" class="<%= title.includes(\'Localidades\') ? \'active\' : \'\' %>">
-            <i class="fas fa-map-marker-alt"></i> Localidades
-          </a>
-        </li>
         <li>
-          <a href="/categories" class="<%= title.includes(\'Categorias\') ? \'active\' : \'\' %>">
-            <i class="fas fa-tags"></i> Categorias
+          <a href="/categories/locations" class="<%= title.includes('Localidades') ? 'active' : '' %>">
+            <i class="fas fa-map-marker-alt"></i> Localidades
           </a>
         </li>
         <% if (user.role === 'admin') { %>
