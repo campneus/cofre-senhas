@@ -166,7 +166,7 @@
     
     // Update form action
     const form = document.getElementById('editUserForm');
-    form.action = `/users/${id}?_method=PUT`;
+    form.action = \`/users/\${id}?_method=PUT\`;
     
     // Open modal
     document.getElementById('editUserModal').style.display = 'block';
@@ -218,4 +218,3 @@
   });
 </script>
 ` }) %>
-
