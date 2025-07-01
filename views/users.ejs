@@ -1,5 +1,5 @@
-<%- include("layout", { body: `
-<div class="page-header">
+<%- include("layout", { body: 
+`<div class="page-header">
   <div>
     <h1 class="page-title">Gerenciar Usuários</h1>
     <p class="page-subtitle">Adicione, edite ou remova usuários do sistema</p>
@@ -21,43 +21,34 @@
         <th>AÇÕES</th>
       </tr>
     </thead>
-    <tbody>
-      <% if (users.length === 0) { %>
-        <tr>
-          <td colspan="6" style="text-align: center; padding: 30px;">
-            Nenhum usuário encontrado.
-          </td>
-        </tr>
-      <% } else { %>
-        <% users.forEach(user => { %>
-          <tr>
-            <td><%= user.name %></td>
-            <td><%= user.email %></td>
-            <td><%= user.role === 'admin' ? 'Administrador' : 'Usuário' %></td>
-            <td><%= new Date(user.created_at).toLocaleDateString('pt-BR') %></td>
-            <td><%= user.last_login ? new Date(user.last_login).toLocaleString('pt-BR') : 'Nunca' %></td>
+    <tbody>` + 
+      (users.length === 0 ? 
+        `<tr><td colspan="6" style="text-align: center; padding: 30px;">Nenhum usuário encontrado.</td></tr>` :
+        users.map(user => 
+          `<tr>
+            <td>${user.name}</td>
+            <td>${user.email}</td>
+            <td>${user.role === 'admin' ? 'Administrador' : 'Usuário'}</td>
+            <td>${new Date(user.created_at).toLocaleDateString('pt-BR')}</td>
+            <td>${user.last_login ? new Date(user.last_login).toLocaleString('pt-BR') : 'Nunca'}</td>
             <td>
               <div class="table-actions">
-                <button 
-                  class="action-btn edit-btn" 
-                  title="Editar" 
-                  onclick="openEditModal('<%= user.id %>', '<%= user.name %>', '<%= user.email %>', '<%= user.role %>')"
-                >
+                <button class="action-btn edit-btn" title="Editar" onclick="openEditModal('${user.id}', '${user.name.replace(/'/g, "\\'")}', '${user.email}', '${user.role}')">
                   <i class="fas fa-edit"></i>
                 </button>
-                <% if (user.id !== locals.user.id) { %>
-                  <form action="/users/<%= user.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
+                ${user.id !== locals.user.id ? 
+                  `<form action="/users/${user.id}?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
                     <button type="submit" class="action-btn delete-btn" title="Excluir">
                       <i class="fas fa-trash"></i>
                     </button>
-                  </form>
-                <% } %>
+                  </form>` : ''
+                }
               </div>
             </td>
-          </tr>
-        <% }); %>
-      <% } %>
-    </tbody>
+          </tr>`
+        ).join('')
+      ) +
+    `</tbody>
   </table>
 </div>
 
@@ -166,7 +157,7 @@
     
     // Update form action
     const form = document.getElementById('editUserForm');
-    form.action = \`/users/\${id}?_method=PUT\`;
+    form.action = '/users/' + id + '?_method=PUT';
     
     // Open modal
     document.getElementById('editUserModal').style.display = 'block';
@@ -215,6 +206,15 @@
         }
       });
     });
+
+    // Delete confirmation
+    document.querySelectorAll('.delete-form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        if (!confirm('Tem certeza que deseja excluir este usuário?')) {
+          e.preventDefault();
+        }
+      });
+    });
   });
-</script>
-` }) %>
+</script>`
+}) %>
