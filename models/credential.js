@@ -10,7 +10,7 @@ const Credential = {
          FROM credentials c 
          LEFT JOIN categories cat ON c.category_id = cat.id
          LEFT JOIN locations l ON c.location_id = l.id
-         ORDER BY c.system_name`
+         ORDER BY l.name ASC, c.system_name`
       );
       return result.rows;
     } catch (err) {
@@ -28,7 +28,7 @@ const Credential = {
          LEFT JOIN categories cat ON c.category_id = cat.id
          LEFT JOIN locations l ON c.location_id = l.id
          WHERE c.category_id = $1
-         ORDER BY c.system_name`,
+         ORDER BY l.name ASC, c.system_name`,
         [categoryId]
       );
       return result.rows;
@@ -52,7 +52,7 @@ const Credential = {
            c.username ILIKE $1 OR
            l.name ILIKE $1 OR
            c.url ILIKE $1
-         ORDER BY c.system_name`,
+         ORDER BY l.name ASC, c.system_name`,
         [term]
       );
       return result.rows;

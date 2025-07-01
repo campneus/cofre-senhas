@@ -71,3 +71,21 @@ router.get('/locations', async (req, res) => {
 });
 
 module.exports = router;
+// Get recent credentials (TOP 5 last updated)
+router.get('/recent-credentials', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT c.*, cat.name as category_name, l.name as location_name 
+       FROM credentials c 
+       LEFT JOIN categories cat ON c.category_id = cat.id
+       LEFT JOIN locations l ON c.location_id = l.id
+       ORDER BY c.updated_at DESC
+       LIMIT 5`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error getting recent credentials:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
