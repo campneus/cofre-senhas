@@ -1,4 +1,4 @@
-<%- include('layout', { body: `
+<%- include("layout", { body: `
 <div class="page-header">
   <div>
     <h1 class="page-title">Gerenciar Usuários</h1>
@@ -158,18 +158,18 @@
 
 <script>
   function openEditModal(id, name, email, role) {
-    document.getElementById('edit_id').value = id;
-    document.getElementById('edit_name').value = name;
-    document.getElementById('edit_email').value = email;
-    document.getElementById('edit_role').value = role;
-    document.getElementById('edit_password').value = '';
+    document.getElementById("edit_id").value = id;
+    document.getElementById("edit_name").value = name;
+    document.getElementById("edit_email").value = email;
+    document.getElementById("edit_role").value = role;
+    document.getElementById("edit_password").value = '';
     
     // Update form action
-    const form = document.getElementById('editUserForm');
-    form.action = \`/users/\${id}?_method=PUT\`;
+    const form = document.getElementById("editUserForm");
+    form.action = `/users/${id}?_method=PUT`;
     
     // Open modal
-    document.getElementById('editUserModal').style.display = 'block';
+    document.getElementById("editUserModal").style.display = 'block';
   }
 
   // Modal functionality
@@ -218,3 +218,4 @@
   });
 </script>
 ` }) %>
+
