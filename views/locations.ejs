@@ -1,0 +1,117 @@
+<!-- views/locations.ejs -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Localidades</h1>
+    <p class="page-subtitle">Gerencie as localidades associadas às senhas</p>
+  </div>
+  <button class="btn btn-primary" data-toggle="modal" data-target="#newLocationModal">
+    <i class="fas fa-plus"></i> Nova Localidade
+  </button>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>NOME</th>
+        <th>NÚMERO DE SENHAS</th>
+        <th>AÇÕES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (locations.length === 0) { %>
+        <tr>
+          <td colspan="3" style="text-align: center; padding: 30px;">
+            Nenhuma localidade encontrada.
+          </td>
+        </tr>
+      <% } else { %>
+        <% locations.forEach(location => { %>
+          <tr>
+            <td><%= location.name %></td>
+            <td><%= location.credential_count || 0 %></td>
+            <td>
+              <div class="table-actions">
+                <button 
+                  class="action-btn edit-btn" 
+                  title="Editar" 
+                  onclick="openEditModal('<%= location.id %>', '<%= location.name %>')"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form action="/categories/locations/<%= location.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
+                  <button type="submit" class="action-btn delete-btn" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Nova Localidade -->
+<div class="modal" id="newLocationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Localidade</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form action="/categories/locations" method="POST" id="newLocationForm">
+          <div class="form-group">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="newLocationForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Localidade -->
+<div class="modal" id="editLocationModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Localidade</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editLocationForm" method="POST">
+          <input type="hidden" id="edit_id" name="id">
+          <div class="form-group">
+            <label for="edit_name" class="form-label">Nome</label>
+            <input type="text" id="edit_name" name="name" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="editLocationForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, name) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_name').value = name;
+    
+    // Update form action
+    const form = document.getElementById('editLocationForm');
+    form.action = `/categories/locations/${id}?_method=PUT`;
+    
+    // Open modal
+    $('#editLocationModal').modal('show');
+  }
+</script>

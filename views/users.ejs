@@ -1,0 +1,174 @@
+<!-- views/users.ejs -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Gerenciar Usuários</h1>
+    <p class="page-subtitle">Adicione, edite ou remova usuários do sistema</p>
+  </div>
+  <button class="btn btn-primary" data-toggle="modal" data-target="#newUserModal">
+    <i class="fas fa-user-plus"></i> Novo Usuário
+  </button>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>NOME</th>
+        <th>EMAIL</th>
+        <th>FUNÇÃO</th>
+        <th>DATA DE CADASTRO</th>
+        <th>ÚLTIMO ACESSO</th>
+        <th>AÇÕES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (users.length === 0) { %>
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 30px;">
+            Nenhum usuário encontrado.
+          </td>
+        </tr>
+      <% } else { %>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.role === 'admin' ? 'Administrador' : 'Usuário' %></td>
+            <td><%= new Date(user.created_at).toLocaleDateString('pt-BR') %></td>
+            <td><%= user.last_login ? new Date(user.last_login).toLocaleString('pt-BR') : 'Nunca' %></td>
+            <td>
+              <div class="table-actions">
+                <button 
+                  class="action-btn edit-btn" 
+                  title="Editar" 
+                  onclick="openEditModal('<%= user.id %>', '<%= user.name %>', '<%= user.email %>', '<%= user.role %>')"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <% if (user.id !== currentUser.id) { %>
+                  <form action="/users/<%= user.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
+                    <button type="submit" class="action-btn delete-btn" title="Excluir">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Novo Usuário -->
+<div class="modal" id="newUserModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Usuário</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form action="/users" method="POST" id="newUserForm">
+          <div class="form-group">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password" class="form-label">Senha</label>
+            <div class="password-field">
+              <input type="password" id="password" name="password" class="form-control" required>
+              <span class="password-toggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="role" class="form-label">Função</label>
+            <select id="role" name="role" class="form-select" required>
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="newUserForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Usuário -->
+<div class="modal" id="editUserModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Usuário</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editUserForm" method="POST">
+          <input type="hidden" id="edit_id" name="id">
+          <div class="form-group">
+            <label for="edit_name" class="form-label">Nome</label>
+            <input type="text" id="edit_name" name="name" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit_email" class="form-label">Email</label>
+            <input type="email" id="edit_email" name="email" class="form-control" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit_password" class="form-label">Nova Senha (deixe em branco para manter a atual)</label>
+            <div class="password-field">
+              <input type="password" id="edit_password" name="password" class="form-control">
+              <span class="password-toggle">
+                <i class="fas fa-eye"></i>
+              </span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit_role" class="form-label">Função</label>
+            <select id="edit_role" name="role" class="form-select" required>
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="editUserForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, name, email, role) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_role').value = role;
+    document.getElementById('edit_password').value = '';
+    
+    // Update form action
+    const form = document.getElementById('editUserForm');
+    form.action = `/users/${id}?_method=PUT`;
+    
+    // Open modal
+    $('#editUserModal').modal('show');
+  }
+</script>

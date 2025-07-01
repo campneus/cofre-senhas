@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Falling Objects - Fun Web Game</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1>Catch the Falling Objects</h1>
+            <div class="score-container">
+                <p>Score: <span id="score">0</span></p>
+                <p>Lives: <span id="lives">3</span></p>
+            </div>
+        </div>
+        
+        <div class="game-area">
+            <canvas id="gameCanvas"></canvas>
+            <div id="startScreen" class="screen">
+                <h2>Catch the Falling Objects</h2>
+                <p>Use the arrow keys or touch to move the basket and catch the falling items!</p>
+                <button id="startButton">Start Game</button>
+            </div>
+            <div id="gameOverScreen" class="screen hidden">
+                <h2>Game Over</h2>
+                <p>Your Score: <span id="finalScore">0</span></p>
+                <button id="restartButton">Play Again</button>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <div class="mobile-controls">
+                <button id="leftBtn">←</button>
+                <button id="rightBtn">→</button>
+            </div>
+            <div class="game-info">
+                <p>Desktop: Use ← → arrow keys to move</p>
+                <p>Mobile: Use buttons or swipe to move</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./main.js"></script>
+</body>
+</html>

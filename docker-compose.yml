@@ -1,0 +1,21 @@
+# docker-compose.yml
+version: '3'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PGHOST=${PGHOST}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGSSLMODE=${PGSSLMODE}
+      - PGCHANNELBINDING=${PGCHANNELBINDING}
+      - PORT=3000
+      - NODE_ENV=production
+      - SESSION_SECRET=${SESSION_SECRET}
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+      - /app/node_modules

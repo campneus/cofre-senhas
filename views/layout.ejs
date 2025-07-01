@@ -1,0 +1,115 @@
+<!-- views/layout.ejs -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <% if (typeof user !== 'undefined' && user) { %>
+    <header class="header">
+      <a href="/dashboard" class="header-logo">
+        <div style="background-color: #FF9800; width: 40px; height: 40px; border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-right: 10px;">
+          <i class="fas fa-shield-alt" style="color: white; font-size: 20px;"></i>
+        </div>
+        <h1>Cofre Campneus</h1>
+      </a>
+      <div class="header-user">
+        <div class="user-info">
+          <div class="user-name">Bem-vindo, <%= user.name %></div>
+          <% if (user.last_login) { %>
+            <div class="user-lastlogin">Último acesso: <%= new Date(user.last_login).toLocaleString('pt-BR') %></div>
+          <% } %>
+        </div>
+        <a href="/logout" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </div>
+    </header>
+    
+    <div class="sidebar">
+      <div class="user-profile">
+        <div class="user-avatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="sidebar-user-name"><%= user.name %></div>
+        <div class="sidebar-user-role"><%= user.role === 'admin' ? 'Administrador' : 'Usuário' %></div>
+      </div>
+      
+      <ul class="sidebar-menu">
+        <li>
+          <a href="/dashboard" class="<%= title.includes('Dashboard') ? 'active' : '' %>">
+            <i class="fas fa-home"></i> Home
+          </a>
+        </li>
+        <li>
+          <a href="#" class="menu-dropdown <%= title.includes('Senhas') ? 'active' : '' %>">
+            <i class="fas fa-key"></i> Cofre de Senhas
+            <span class="dropdown-icon"><i class="fas fa-chevron-<%= title.includes('Senhas') ? 'up' : 'down' %>"></i></span>
+          </a>
+          <ul class="sidebar-submenu <%= title.includes('Senhas') ? 'open' : '' %>">
+            <li>
+              <a href="/credentials?category=1" class="<%= title.includes('Prefeituras') ? 'active' : '' %>">
+                <i class="fas fa-building"></i> Prefeituras
+              </a>
+            </li>
+            <li>
+              <a href="/credentials?category=2" class="<%= title.includes('Fornecedores') ? 'active' : '' %>">
+                <i class="fas fa-truck"></i> Fornecedores
+              </a>
+            </li>
+            <li>
+              <a href="/credentials?category=3" class="<%= title.includes('Órgãos') ? 'active' : '' %>">
+                <i class="fas fa-landmark"></i> Órgãos Governamentais
+              </a>
+            </li>
+            <li>
+              <a href="/credentials?category=4" class="<%= title.includes('B2Fleet') ? 'active' : '' %>">
+                <i class="fas fa-car"></i> B2Fleet e Locadoras
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="/categories/locations" class="<%= title.includes('Localidades') ? 'active' : '' %>">
+            <i class="fas fa-map-marker-alt"></i> Localidades
+          </a>
+        </li>
+        <% if (user.role === 'admin') { %>
+          <li>
+            <a href="/users" class="<%= title.includes('Usuários') ? 'active' : '' %>">
+              <i class="fas fa-users"></i> Usuários
+            </a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+    
+    <div class="main-content">
+      <% if (success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success">
+          <%= success_msg %>
+        </div>
+      <% } %>
+      
+      <% if (error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-danger">
+          <%= error_msg %>
+        </div>
+      <% } %>
+      
+      <%- body %>
+    </div>
+  <% } else { %>
+    <%- body %>
+  <% } %>
+  
+  <script src="/js/main.js"></script>
+</body>
+</html>

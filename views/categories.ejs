@@ -1,0 +1,117 @@
+<!-- views/categories.ejs -->
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Categorias</h1>
+    <p class="page-subtitle">Gerencie as categorias para organização das senhas</p>
+  </div>
+  <button class="btn btn-primary" data-toggle="modal" data-target="#newCategoryModal">
+    <i class="fas fa-plus"></i> Nova Categoria
+  </button>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>NOME</th>
+        <th>NÚMERO DE SENHAS</th>
+        <th>AÇÕES</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (categories.length === 0) { %>
+        <tr>
+          <td colspan="3" style="text-align: center; padding: 30px;">
+            Nenhuma categoria encontrada.
+          </td>
+        </tr>
+      <% } else { %>
+        <% categories.forEach(category => { %>
+          <tr>
+            <td><%= category.name %></td>
+            <td><%= category.credential_count || 0 %></td>
+            <td>
+              <div class="table-actions">
+                <button 
+                  class="action-btn edit-btn" 
+                  title="Editar" 
+                  onclick="openEditModal('<%= category.id %>', '<%= category.name %>')"
+                >
+                  <i class="fas fa-edit"></i>
+                </button>
+                <form action="/categories/<%= category.id %>?_method=DELETE" method="POST" class="delete-form" style="display: inline;">
+                  <button type="submit" class="action-btn delete-btn" title="Excluir">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }); %>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Nova Categoria -->
+<div class="modal" id="newCategoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Categoria</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form action="/categories" method="POST" id="newCategoryForm">
+          <div class="form-group">
+            <label for="name" class="form-label">Nome</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="newCategoryForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Categoria -->
+<div class="modal" id="editCategoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Editar Categoria</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="editCategoryForm" method="POST">
+          <input type="hidden" id="edit_id" name="id">
+          <div class="form-group">
+            <label for="edit_name" class="form-label">Nome</label>
+            <input type="text" id="edit_name" name="name" class="form-control" required>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" form="editCategoryForm" class="btn btn-primary">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openEditModal(id, name) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_name').value = name;
+    
+    // Update form action
+    const form = document.getElementById('editCategoryForm');
+    form.action = `/categories/${id}?_method=PUT`;
+    
+    // Open modal
+    $('#editCategoryModal').modal('show');
+  }
+</script>

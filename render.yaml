@@ -1,13 +1,11 @@
+# render.yaml
 services:
   - type: web
     name: cofre-campneus
     env: node
-    plan: free
     buildCommand: npm install
     startCommand: node server.js
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PGHOST
         value: ep-crimson-meadow-a8krhs13.eastus2.azure.neon.tech
       - key: PGDATABASE
@@ -20,8 +18,8 @@ services:
         value: require
       - key: PGCHANNELBINDING
         value: require
-      - key: JWT_SECRET
-        value: cofre_campneus_jwt_secret_key_2024_production
-      - key: PORT
-        value: 10000
-
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        value: cofre-campneus-secret-key-change-in-production
+    healthCheckPath: /login
