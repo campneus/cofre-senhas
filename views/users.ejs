@@ -1,4 +1,4 @@
-<!-- views/users.ejs -->
+<%- include('layout', { body: `
 <div class="page-header">
   <div>
     <h1 class="page-title">Gerenciar Usuários</h1>
@@ -166,9 +166,55 @@
     
     // Update form action
     const form = document.getElementById('editUserForm');
-    form.action = `/users/${id}?_method=PUT`;
+    form.action = \`/users/\${id}?_method=PUT\`;
     
     // Open modal
-    $('#editUserModal').modal('show');
+    document.getElementById('editUserModal').style.display = 'block';
   }
+
+  // Modal functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Open modal
+    document.querySelectorAll('[data-toggle="modal"]').forEach(button => {
+      button.addEventListener('click', function() {
+        const target = this.getAttribute('data-target');
+        document.querySelector(target).style.display = 'block';
+      });
+    });
+
+    // Close modal
+    document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
+      button.addEventListener('click', function() {
+        this.closest('.modal').style.display = 'none';
+      });
+    });
+
+    // Close modal when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+        }
+      });
+    });
+
+    // Password toggle functionality
+    document.querySelectorAll('.password-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const passwordField = this.previousElementSibling;
+        const icon = this.querySelector('i');
+        
+        if (passwordField.type === 'password') {
+          passwordField.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          passwordField.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      });
+    });
+  });
 </script>
+` }) %>
