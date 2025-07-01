@@ -28,8 +28,17 @@ router.get('/', async (req, res) => {
       credentials = await Credential.getAll();
     }
     
+    // Determine the page title based on category
+    let pageTitle = 'Gerenciamento de Senhas | Cofre Campneus';
+    if (categoryId && categoryId !== 'all') {
+      const selectedCat = categories.find(c => c.id == categoryId);
+      if (selectedCat) {
+        pageTitle = `${selectedCat.name} - Senhas | Cofre Campneus`;
+      }
+    }
+    
     res.render('credentials', { 
-      title: 'Gerenciamento de Senhas | Cofre Campneus',
+      title: pageTitle,
       credentials,
       categories,
       locations,
